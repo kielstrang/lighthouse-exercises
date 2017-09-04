@@ -3,7 +3,7 @@ function whatToDoForLunch(hungry, availableTime) {
   if(hungry) {
     switch(true) {
       case (availableTime >= 0 && availableTime < 20):
-       advice = "Pick up something to eat in the Lab";
+        advice = "Pick up something to eat in the Lab";
         break;
       case (availableTime >= 20 && availableTime < 45):
         advice = "Try a place in Gastown";
