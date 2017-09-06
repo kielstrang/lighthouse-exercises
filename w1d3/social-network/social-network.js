@@ -112,12 +112,11 @@ function SocialNetwork(networkData) {
     var people = [];
     for (var personId in this.data) {
       var follows = this.getPeopleFollowedIds(personId);
-      followerLoop:
       for (var followId of follows) {
         var theirFollows = this.getPeopleFollowedIds(followId);
         if (theirFollows.indexOf(personId) === -1) {
           people.push(this.getPersonName(personId));
-          break followerLoop;
+          break;
         }
       }
     }
