@@ -106,7 +106,23 @@ function SocialNetwork(networkData) {
   this.getPersonAge = function(personId) {
     var person = this.getPersonById(personId);
     return person.age;
-  }
+  };
+
+  this.printOneWayFollows = function() {
+    var people = [];
+    for (var personId in this.data) {
+      var follows = this.getPeopleFollowedIds(personId);
+      followerLoop:
+      for (var followId of follows) {
+        var theirFollows = this.getPeopleFollowedIds(followId);
+        if (theirFollows.indexOf(personId) === -1) {
+          people.push(this.getPersonName(personId));
+          break followerLoop;
+        }
+      }
+    }
+    console.log(`${people.join(', ')} follow someone who doesn't follow them`);
+  };
 };
 
 var data = {
@@ -157,6 +173,8 @@ socialNetwork.printMostFollowedPeople();
 console.log('--------');
 socialNetwork.printReachList();
 console.log('--------');
+socialNetwork.printOneWayFollows();
+console.log('--------');
 
 var filterOver30 = function (personId) {
   return socialNetwork.getPersonAge(personId) > 30;
@@ -167,3 +185,4 @@ console.log('--------');
 socialNetwork.printMostFollowedPeople(filterOver30, 'over 30 ');
 console.log('--------');
 socialNetwork.printReachList(filterOver30, 'over 30 ');
+console.log('--------');
