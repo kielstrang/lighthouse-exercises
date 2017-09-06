@@ -1,54 +1,23 @@
-var socialNetwork = {
-  data : {
-    f01: {
-      name: "Alice",
-      age: 15,
-      follows: ["f02", "f03", "f04"]
-    },
-    f02: {
-      name: "Bob",
-      age: 20,
-      follows: ["f05", "f06"]
-    },
-    f03: {
-      name: "Charlie",
-      age: 35,
-      follows: ["f01", "f04", "f06"]
-    },
-    f04: {
-      name: "Debbie",
-      age: 40,
-      follows: ["f01", "f02", "f03", "f05", "f06"]
-    },
-    f05: {
-      name: "Elizabeth",
-      age: 45,
-      follows: ["f04"]
-    },
-    f06: {
-      name: "Finn",
-      age: 25,
-      follows: ["f05"]
-    }
-  },
+function SocialNetwork(networkData) {
+  this.data = networkData;
 
-  getPersonById : function(personId) {
+  this.getPersonById = function(personId) {
     return this.data[personId];
-  },
+  };
 
-  getPersonId : function(name) {
+  this.getPersonId = function(name) {
     for (var personId in this.data) {
       if(this.getPersonById(personId).name === name) {
         return personId;
       }
     }
-  },
+  };
 
-  getPersonName : function(personId) {
+  this.getPersonName = function(personId) {
     return this.getPersonById(personId).name;
-  },
+  };
 
-  getFollowerIds : function(personId, filter = function() { return true; }) {
+  this.getFollowerIds = function(personId, filter = function() { return true; }) {
     var followers = [];
     for (var otherPersonId in this.data) {
       for (var followId of this.getPersonById(otherPersonId).follows) {
@@ -59,21 +28,21 @@ var socialNetwork = {
       }
     }
     return followers;
-  },
+  };
 
-  getPeopleFollowedIds : function(personId, filter = function() { return true; }) {
+  this.getPeopleFollowedIds = function(personId, filter = function() { return true; }) {
     return this.getPersonById(personId).follows.filter(filter);
-  },
+  };
 
-  getPeopleFollowedNames : function(personId, filter = function() { return true; }) {
+  this.getPeopleFollowedNames = function(personId, filter = function() { return true; }) {
     return this.getFollowerIds(personId, filter).map(this.getPersonName.bind(this));
-  },
+  };
 
-  getFollowerNames : function(personId, filter = function() { return true; }) {
+  this.getFollowerNames = function(personId, filter = function() { return true; }) {
     return this.getPeopleFollowedIds(personId, filter).map(this.getPersonName.bind(this));
-  },
+  };
 
-  printConnectionList : function() {
+  this.printConnectionList = function() {
     for (var personId in this.data) {
       console.log(this.getPersonName(personId) + ':');
       var followsList = this.getFollowerNames(personId).join(', ');
@@ -81,9 +50,9 @@ var socialNetwork = {
       var followersList = this.getPeopleFollowedNames(personId).join(', ')
       console.log(` - Followed by ${followersList ? followersList : 'no one'}`);
     }
-  },
+  };
 
-  printMostFollowedPeople : function(filter = function() { return true; }, filterDesc = '') {
+  this.printMostFollowedPeople = function(filter = function() { return true; }, filterDesc = '') {
     var max = { names : [], follows : 0 };
     for (var personId in this.data) {
       var numFollows = this.getPeopleFollowedIds(personId, filter).length;
@@ -95,9 +64,9 @@ var socialNetwork = {
       }
     }
     console.log(`${max.names.join(', ')} ${max.names.length > 1 ? 'follow' : 'follows'} the most people ${filterDesc}(${max.follows})`);
-  },
+  };
 
-  printMostFollowers : function(filter = function() { return true; }, filterDesc = '') {
+  this.printMostFollowers = function(filter = function() { return true; }, filterDesc = '') {
     var max = { names : [], followers : 0 };
     for (var personId in this.data) {
       var numFollowers = this.getFollowerIds(personId, filter).length;
@@ -109,32 +78,76 @@ var socialNetwork = {
       }
     }
     console.log(`${max.names.join(', ')} ${max.names.length > 1 ? 'have' : 'has'} the most followers ${filterDesc}(${max.followers})`);
-  },
+  };
 
-  getPersonReach : function (personId) {
-    var followers = this.getFollowerIds(personId);
+  this.getPersonReach = function (personId, filter = function() { return true; }) {
+    var followers = this.getFollowerIds(personId).filter(filter);
     for (var i in followers) {
       var followerId = followers[i];
-      var theirFollowers = this.getFollowerIds(followerId);
+      var theirFollowers = this.getFollowerIds(followerId).filter(filter);
       followers = followers.concat(theirFollowers);
     }
     var uniqueFollowers = [...new Set(followers)];
-    return uniqueFollowers.length;
-  },
 
-  printReachList : function() {
+    if(uniqueFollowers.indexOf(personId) != -1) {
+      return uniqueFollowers.length - 1;
+    }
+    return uniqueFollowers.length;
+  };
+
+  this.printReachList = function(filter = function() { return true; }, filterDesc = '') {
     for (var personId in this.data) {
       var name = this.getPersonName(personId);
-      var reach = this.getPersonReach(personId);
-      console.log(`${name} has a reach of ${reach}`);
+      var reach = this.getPersonReach(personId, filter);
+      console.log(`${name} reaches ${reach} people ${filterDesc}`);
     }
-  },
+  };
 
-  filterOver30 : function(personId) {
+  this.getPersonAge = function(personId) {
     var person = this.getPersonById(personId);
-    return person.age > 30;
+    return person.age;
   }
 };
+
+var data = {
+  f01: {
+    name: "Alice",
+    age: 15,
+    follows: ["f02", "f03", "f04"]
+  },
+  f02: {
+    name: "Bob",
+    age: 20,
+    follows: ["f05", "f06"]
+  },
+  f03: {
+    name: "Charlie",
+    age: 35,
+    follows: ["f01", "f04", "f06"]
+  },
+  f04: {
+    name: "Debbie",
+    age: 40,
+    follows: ["f01", "f02", "f03", "f05", "f06"]
+  },
+  f05: {
+    name: "Elizabeth",
+    age: 45,
+    follows: ["f04"]
+  },
+  f06: {
+    name: "Finn",
+    age: 25,
+    follows: ["f05"]
+  },
+  f07: {
+    name: "George",
+    age: 70,
+    follows: []
+  }
+};
+
+var socialNetwork = new SocialNetwork(data);
 
 socialNetwork.printConnectionList();
 console.log('--------');
@@ -143,8 +156,14 @@ console.log('--------');
 socialNetwork.printMostFollowedPeople();
 console.log('--------');
 socialNetwork.printReachList();
+console.log('--------');
 
-// socialNetwork.printMostFollowers(socialNetwork.filterOver30, 'over 30 ');
-// console.log('--------');
-// socialNetwork.printMostFollowedPeople(socialNetwork.filterOver30, 'over 30 ');
-// console.log('--------');
+var filterOver30 = function (personId) {
+  return socialNetwork.getPersonAge(personId) > 30;
+};
+
+socialNetwork.printMostFollowers(filterOver30, 'over 30 ');
+console.log('--------');
+socialNetwork.printMostFollowedPeople(filterOver30, 'over 30 ');
+console.log('--------');
+socialNetwork.printReachList(filterOver30, 'over 30 ');
