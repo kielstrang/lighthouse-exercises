@@ -1,5 +1,4 @@
 function maxProfit(stockPrices) {
-  console.log(stockPrices);
   var maxProfitAtTime = prices.map(function(currentPrice, index, prices) {
     var maxPriceAfter = Math.max.apply(0, prices.slice(index));
     return maxPriceAfter - currentPrice;
