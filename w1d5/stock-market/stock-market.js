@@ -1,5 +1,5 @@
 function maxProfit(stockPrices) {
-  var maxProfitAtTime = prices.map(function(currentPrice, index, prices) {
+  var maxProfitAtTime = stockPrices.map(function(currentPrice, index, prices) {
     var maxPriceAfter = Math.max.apply(0, prices.slice(index));
     var profit = maxPriceAfter - currentPrice;
     return profit > 0 ? profit : -1;
@@ -8,10 +8,12 @@ function maxProfit(stockPrices) {
 }
 
 function fastMaxProfit(stockPrices) {
-  if(stockPrices.length <= 1) return -1;
+  if(stockPrices.length <= 1) {
+    return -1;
+  }
 
   var firstHalf = stockPrices.splice(0, Math.floor(stockPrices.length / 2));
-  var minInFirstHalf = Math.min.apply(0,firstHalf);
+  var minInFirstHalf = Math.min.apply(0, firstHalf);
   var secondHalf = stockPrices;
   var maxInSecondHalf = Math.max.apply(0, secondHalf);
 
