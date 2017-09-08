@@ -175,13 +175,23 @@ console.log('--------');
 socialNetwork.printOneWayFollows();
 console.log('--------');
 
-var filterOver30 = function (personId) {
-  return socialNetwork.getPersonAge(personId) > 30;
+var filterByAge = function (age, comparison) {
+  var validComparisons = ['>', '<', '>=', '<=', '==='];
+
+  if (isNaN(age) || validComparisons.indexOf(comparison) === -1) {
+    return function () {
+      return false;
+    };
+  }
+
+  return function (personId) {
+    return eval(`${socialNetwork.getPersonAge(personId)} ${comparison} ${age}`);
+  };
 };
 
-socialNetwork.printMostFollowers(filterOver30, 'over 30 ');
+socialNetwork.printMostFollowers(filterByAge(30, '>'), 'over 30 ');
 console.log('--------');
-socialNetwork.printMostFollowedPeople(filterOver30, 'over 30 ');
+socialNetwork.printMostFollowedPeople(filterByAge(30, '>'), 'over 30 ');
 console.log('--------');
-socialNetwork.printReachList(filterOver30, 'over 30 ');
+socialNetwork.printReachList(filterByAge(30, '>'), 'over 30 ');
 console.log('--------');
