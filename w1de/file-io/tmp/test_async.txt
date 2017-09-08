@@ -1,0 +1,5 @@
+This file has text for tests.
+
+This text is here to test a text handling program that reads text from text files.
+
+Here is some more text.
