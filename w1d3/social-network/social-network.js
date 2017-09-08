@@ -47,7 +47,7 @@ function SocialNetwork(networkData) {
       console.log(this.getPersonName(personId) + ':');
       var followsList = this.getFollowerNames(personId).join(', ');
       console.log(` - Follows ${followsList ? followsList : 'no one'}`);
-      var followersList = this.getPeopleFollowedNames(personId).join(', ')
+      var followersList = this.getPeopleFollowedNames(personId).join(', ');
       console.log(` - Followed by ${followersList ? followersList : 'no one'}`);
     }
   };
@@ -175,17 +175,22 @@ console.log('--------');
 socialNetwork.printOneWayFollows();
 console.log('--------');
 
-var filterByAge = function (age, comparison) {
-  var validComparisons = ['>', '<', '>=', '<=', '==='];
+var filterByAge = function (age, comparisonString) {
+  var comparators = [...new Set(comparisonString.split(''))];
 
-  if (isNaN(age) || validComparisons.indexOf(comparison) === -1) {
-    return function () {
-      return false;
-    };
-  }
+  var strategies = {
+    '>' : (x) => x > age,
+    '<' : (x) => x < age,
+    '=' : (x) => x === age
+  };
 
   return function (personId) {
-    return eval(`${socialNetwork.getPersonAge(personId)} ${comparison} ${age}`);
+    var personAge = socialNetwork.getPersonAge(personId);
+    return comparators.some((c) => {
+      var strategy = strategies[c];
+      if(typeof strategy !== 'function') throw Error(`Invalid comparison character: ${c}`);
+      return(strategy(personAge));
+    });
   };
 };
 
@@ -194,4 +199,7 @@ console.log('--------');
 socialNetwork.printMostFollowedPeople(filterByAge(30, '>'), 'over 30 ');
 console.log('--------');
 socialNetwork.printReachList(filterByAge(30, '>'), 'over 30 ');
+console.log('--------');
+
+socialNetwork.printMostFollowedPeople(filterByAge(20, '<='), 'no older than 20 ');
 console.log('--------');
