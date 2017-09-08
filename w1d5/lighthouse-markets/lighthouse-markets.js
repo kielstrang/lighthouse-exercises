@@ -15,7 +15,7 @@ var getTotalBottles = function(recycling) {
   recycling.emptyBottles %= 2;
   recycling.caps %= 4;
   return getTotalBottles(recycling);
-}
+};
 
 var getBottlesPurchased = function(dollars) {
   var initialPurchase = {
@@ -27,7 +27,7 @@ var getBottlesPurchased = function(dollars) {
     caps : 0
   };
   return getTotalBottles(initialPurchase);
-}
+};
 
 var printResults = function(recycling) {
   console.log('Total Bottles: ', recycling.totalBottles);
@@ -36,7 +36,7 @@ var printResults = function(recycling) {
   console.log('Total Earned:');
   console.log('  Bottles: ', recycling.fromEmptyBottles);
   console.log('  Caps: ', recycling.fromCaps);
-}
+};
 
 var investment = process.argv[2];
 printResults(getBottlesPurchased(investment));
